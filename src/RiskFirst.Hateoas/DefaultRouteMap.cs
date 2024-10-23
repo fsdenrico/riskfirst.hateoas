@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <AssemblyName>RiskFirst.Hateoas</AssemblyName>
     <PackageId>RiskFirst.Hateoas</PackageId>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -29,19 +29,24 @@
         v3.1.1 - bug fix for routes with more than 1 HttpMethodAttribute
         v3.1.2 - Patch Security Issues
         v4.0.0 - Drop .NET Framework support
+        v4.0.1 - RiskFirst.Hateoas.Models v5.0.0
     </PackageReleaseNotes>
-    <Version>4.0.0</Version>
+    <Version>4.0.1</Version>
     <PackageIconUrl>https://raw.githubusercontent.com/riskfirst/pkgicons/master/riskfirst-pkg.png</PackageIconUrl>
-    <AssemblyVersion>4.0.0.0</AssemblyVersion>
-    <FileVersion>4.0.0.0</FileVersion>
+    <AssemblyVersion>4.0.1.0</AssemblyVersion>
+    <FileVersion>4.0.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RiskFirst.Hateoas.Models\RiskFirst.Hateoas.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
   </ItemGroup>
 
 </Project>
