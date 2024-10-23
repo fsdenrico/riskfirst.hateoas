@@ -1027,7 +1027,8 @@ namespace RiskFirst.Hateoas.Tests
 
             // Assert
             Assert.True(model.Links.Count == 0, "Incorrect number of links applied");
-            testCase.ServiceLoggerMock.Verify(x => x.Log(LogLevel.Warning,It.IsAny<EventId>(), It.IsAny<object>(), null,It.IsAny<Func<object,Exception,string>>()));
+
+            testCase.ServiceLoggerMock.Verify(x => x.Log(LogLevel.Warning, 0, It.IsAny<It.IsAnyType>(), null, It.IsAny<Func<It.IsAnyType, Exception, string>>()));
         }
 
         [AutonamedFact]
@@ -1062,7 +1063,7 @@ namespace RiskFirst.Hateoas.Tests
             var contextMock = testCase.LinksHandlerContextFactory.GetLinksHandlerContextMock<TestLinkContainer>();
             contextMock.Verify(x => x.Handled(It.IsAny<TestRequirement<TestLinkContainer>>()), Times.Never());
             contextMock.Verify(x => x.Handled(It.IsAny<RouteLinkRequirement<TestLinkContainer>>()), Times.Once());
-            testCase.ServiceLoggerMock.Verify(x => x.Log(LogLevel.Warning, It.IsAny<EventId>(), It.IsAny<object>(), null, It.IsAny<Func<object, Exception, string>>()));
+            testCase.ServiceLoggerMock.Verify(x => x.Log(LogLevel.Warning, 0, It.IsAny<It.IsAnyType>(), null, It.IsAny<Func<It.IsAnyType, Exception, string>>()));
         }
         #endregion
 
