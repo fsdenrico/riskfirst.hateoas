@@ -12,8 +12,7 @@ public partial class Program
 
         var services = builder.Services;
 
-        services.AddControllers()
-            .AddNewtonsoftJson();
+        services.AddControllers();
         services.AddScoped<IValuesRepository, ValuesRepository>();
         services.AddLinks(config =>
         {
