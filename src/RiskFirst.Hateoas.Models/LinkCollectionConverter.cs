@@ -1,16 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RiskFirst.Hateoas.Models
 {
     public class LinkCollectionConverter : JsonConverter<LinkCollection>
     {
-        public override LinkCollection ReadJson(JsonReader reader, Type objectType, LinkCollection existingValue, bool hasExistingValue, JsonSerializer serializer)
+        public override LinkCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var links = (Dictionary<string, Link>)serializer
-                .Deserialize(reader, typeof(Dictionary<string, Link>));
+            var links = JsonSerializer.Deserialize<Dictionary<string, Link>>(ref reader, options);
+
+            var existingValue = new LinkCollection();
 
             foreach (var link in links)
             {
@@ -21,12 +23,11 @@ namespace RiskFirst.Hateoas.Models
             return existingValue;
         }
 
-        public override void WriteJson(JsonWriter writer, LinkCollection value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, LinkCollection value, JsonSerializerOptions options)
         {
-            var links = value?
-                .ToDictionary(x => x.Name, x => x);
+            var links = value?.ToDictionary(x => x.Name, x => x);
 
-            serializer.Serialize(writer, links);
+            JsonSerializer.Serialize(writer, links);
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using RiskFirst.Hateoas.Models;
+﻿using RiskFirst.Hateoas.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Xunit;
 
 namespace RiskFirst.Hateoas.Tests
@@ -22,10 +22,10 @@ namespace RiskFirst.Hateoas.Tests
             var container = new TestLinkContainer(testLinks);
 
             // Act
-            var result = JsonConvert.SerializeObject(container);
+            var result = JsonSerializer.Serialize(container);
 
             // Assert
-            var deserialized = JsonConvert.DeserializeObject<TestLinkContainer>(result);
+            var deserialized = JsonSerializer.Deserialize<TestLinkContainer>(result);
 
             Assert.True(deserialized.Links.Count > 0);
 
@@ -47,10 +47,10 @@ namespace RiskFirst.Hateoas.Tests
             var container = new TestLinkContainer(testLinks);
 
             // Act
-            var result = JsonConvert.SerializeObject(container);
+            var result = JsonSerializer.Serialize(container);
 
             // Assert
-            var deserialized = JsonConvert.DeserializeObject<TestLinkContainer>(result);
+            var deserialized = JsonSerializer.Deserialize<TestLinkContainer>(result);
 
             Assert.Equal(0, deserialized.Links.Count);
         }

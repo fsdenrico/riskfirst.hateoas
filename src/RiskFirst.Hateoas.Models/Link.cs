@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
 namespace RiskFirst.Hateoas.Models

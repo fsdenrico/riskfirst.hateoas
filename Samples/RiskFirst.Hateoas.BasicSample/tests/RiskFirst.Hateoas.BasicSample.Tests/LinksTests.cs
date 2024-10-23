@@ -1,14 +1,12 @@
 using System.Net.Http.Headers;
 using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
 using RiskFirst.Hateoas.BasicSample.Models;
 using RiskFirst.Hateoas.Models;
 
 namespace RiskFirst.Hateoas.BasicSample.Tests;
 
-public class BasicTests
-    : IClassFixture<WebApplicationFactory<Program>>
+public class BasicTests : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly WebApplicationFactory<Program> _factory;
 
@@ -24,13 +22,12 @@ public class BasicTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/values");
-        response.EnsureSuccessStatusCode();
+        var values = await client.GetFromJsonAsync<ItemsLinkContainer<ValueInfo>>("/api/values");
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var values = JsonConvert.DeserializeObject<ItemsLinkContainer<ValueInfo>>(responseString);
+        // Assert
+        var items = values?.Items ?? Enumerable.Empty<ValueInfo>();
 
-        Assert.All(values.Items, i => Assert.True(i.Links.Count > 0, "Invalid number of links"));
+        Assert.All(items, i => Assert.True(i.Links.Count > 0, "Invalid number of links"));
     }
 
     [Fact]
@@ -41,13 +38,14 @@ public class BasicTests
 
         // Act
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-        var response = await client.GetAsync("/api/values");
-        response.EnsureSuccessStatusCode();
+        var responseString = await client.GetStringAsync("/api/values");
 
-        var responseString = await response.Content.ReadAsStringAsync();
         var values = DeserializeXml<ItemsLinkContainer<ValueInfo>>(responseString);
 
-        Assert.All(values.Items, i => Assert.True(i.Links.Count > 0, "Invalid number of links"));
+        // Assert
+        var items = values?.Items ?? Enumerable.Empty<ValueInfo>();
+
+        Assert.All(items, i => Assert.True(i.Links.Count > 0, "Invalid number of links"));
     }
 
     [Fact]
@@ -56,14 +54,13 @@ public class BasicTests
         // Arrange
         var client = _factory.CreateClient();
 
+        var test = await client.GetStringAsync("/api/values/v2/1");
+
         // Act
-        var response = await client.GetAsync("/api/values/v2/1");
-        response.EnsureSuccessStatusCode();
+        var value = await client.GetFromJsonAsync<ValueInfo>("/api/values/v2/1");
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var value = JsonConvert.DeserializeObject<ValueInfo>(responseString);
-
-        Assert.True(value.Links.Count > 0, "Invalid number of links");
+        // Assert
+        Assert.True(value?.Links.Count > 0, "Invalid number of links");
     }
 
     [Fact]
@@ -74,13 +71,12 @@ public class BasicTests
 
         // Act
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-        var response = await client.GetAsync("/api/values/v2/1");
-        response.EnsureSuccessStatusCode();
+        var responseString = await client.GetStringAsync("/api/values/v2/1");
 
-        var responseString = await response.Content.ReadAsStringAsync();
         var value = DeserializeXml<ValueInfo>(responseString);
 
-        Assert.True(value.Links.Count > 0, "Invalid number of links");
+        // Assert
+        Assert.True(value?.Links.Count > 0, "Invalid number of links");
     }
 
     [Fact]
@@ -89,14 +85,11 @@ public class BasicTests
         // Arrange
         var client = _factory.CreateClient();
 
-        // Act
-        var response = await client.GetAsync("/api/values/1");
-        response.EnsureSuccessStatusCode();
+        // Value
+        var value = await client.GetFromJsonAsync<ValueInfo>("/api/values/1");
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var value = JsonConvert.DeserializeObject<ValueInfo>(responseString);
-
-        Assert.True(value.Links.Count > 0, "Invalid number of links");
+        // Assert
+        Assert.True(value?.Links.Count > 0, "Invalid number of links");
     }
 
     [Fact]
@@ -107,21 +100,19 @@ public class BasicTests
 
         // Act
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
-        var response = await client.GetAsync("/api/values/1");
-        response.EnsureSuccessStatusCode();
+        var responseString = await client.GetStringAsync("/api/values/1");
 
-        var responseString = await response.Content.ReadAsStringAsync();
         var value = DeserializeXml<ValueInfo>(responseString);
 
-        Assert.True(value.Links.Count > 0, "Invalid number of links");
+        // Assert
+        Assert.True(value?.Links.Count > 0, "Invalid number of links");
     }
 
-    private static T DeserializeXml<T>(string xml)
+    private static T? DeserializeXml<T>(string xml)
     {
-        using (var reader = new StringReader(xml))
-        {
-            var serializer = new XmlSerializer(typeof(T));
-            return (T)serializer.Deserialize(reader);
-        }
+        using var reader = new StringReader(xml);
+
+        var serializer = new XmlSerializer(typeof(T));
+        return (T?)serializer.Deserialize(reader);
     }
 }

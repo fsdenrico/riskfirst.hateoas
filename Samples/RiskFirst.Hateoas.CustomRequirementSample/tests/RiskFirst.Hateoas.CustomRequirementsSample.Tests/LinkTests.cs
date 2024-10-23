@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Testing;
-using Newtonsoft.Json;
 using RiskFirst.Hateoas.CustomRequirementSample.Models;
 using RiskFirst.Hateoas.CustomRequirementsSample.Tests;
 using RiskFirst.Hateoas.Models;
+using System.Net.Http.Json;
 
 namespace RiskFirst.Hateoas.CustomRequirementsSample.TestsNew;
 
@@ -23,11 +23,9 @@ public class RootApiTests
         var client = _factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/values");
-        response.EnsureSuccessStatusCode();
+        var test = await client.GetStringAsync("/api/values");
 
-        var responseString = await response.Content.ReadAsStringAsync();
-        var values = JsonConvert.DeserializeObject<ItemsLinkContainer<ValueInfo>>(responseString);
+        var values = await client.GetFromJsonAsync<ItemsLinkContainer<ValueInfo>>("/api/values");
 
         Assert.Contains(
             new Link
